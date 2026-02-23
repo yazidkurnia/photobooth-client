@@ -69,6 +69,7 @@
         <input type="email" id="email" placeholder="contoh@email.com" class="w-full px-4 py-3 rounded-lg bg-gray-700 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-green-500 mb-6">
         <button id="start-btn" class="w-full bg-green-500 text-white font-bold py-3 px-6 rounded-lg glow-btn">Mulai</button>
         <p id="email-error" class="text-red-500 mt-4" style="display: none;">Email tidak boleh kosong.</p>
+        <p id="camera-error" class="text-yellow-500 mt-4" style="display: none;"></p>
     </div>
 
     <!-- Photo Screen -->
@@ -94,6 +95,7 @@
         const startBtn = document.getElementById('start-btn');
         const emailInput = document.getElementById('email');
         const emailError = document.getElementById('email-error');
+        const cameraError = document.getElementById('camera-error');
         const cameraFeed = document.getElementById('camera-feed');
         const countdownOverlay = document.getElementById('countdown-overlay');
         const countdownDisplay = document.getElementById('countdown');
@@ -110,25 +112,49 @@
                 return;
             }
             emailError.style.display = 'none';
+            cameraError.style.display = 'none';
             
-            startScreen.style.display = 'none';
-            photoScreen.style.display = 'block';
-
             startPhotoSession();
         });
 
+        function resetToStartScreen(message) {
+            startScreen.style.display = 'block';
+            photoScreen.style.display = 'none';
+            if (message) {
+                cameraError.textContent = message;
+                cameraError.style.display = 'block';
+            }
+        }
+
         async function startPhotoSession() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                resetToStartScreen("Kamera tidak didukung di browser ini.");
+                return;
+            }
+
             try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                if (videoDevices.length === 0) {
+                    throw new Error('No camera found.');
+                }
+
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
                 cameraFeed.srcObject = stream;
                 
+                startScreen.style.display = 'none';
+                photoScreen.style.display = 'block';
                 startCountdown();
+
             } catch (err) {
                 console.error("Error accessing camera: ", err);
-                alert("Tidak dapat mengakses kamera. Pastikan Anda memberikan izin.");
-                // Reset UI
-                startScreen.style.display = 'block';
-                photoScreen.style.display = 'none';
+                let errorMessage = "Tidak dapat mengakses kamera.";
+                if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+                    errorMessage = "Izin untuk mengakses kamera tidak diberikan. Silakan izinkan akses kamera di pengaturan browser Anda.";
+                } else if (err.message === 'No camera found.') {
+                    errorMessage = "Kamera tidak ditemukan. Pastikan kamera terhubung dan tidak digunakan oleh aplikasi lain.";
+                }
+                resetToStartScreen(errorMessage);
             }
         }
         
