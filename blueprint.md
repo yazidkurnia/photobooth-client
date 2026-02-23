@@ -1,44 +1,37 @@
+# Photobooth Application Blueprint
 
-# Blueprint Aplikasi Photobooth
+## Overview
 
-## Ringkasan
+This document outlines the architecture, features, and implementation details of the Photobooth application. The application is a web-based photobooth that allows users to take pictures using their device's camera.
 
-Aplikasi web photobooth sederhana yang memungkinkan pengguna untuk mengambil foto secara otomatis setelah memasukkan email mereka. Aplikasi ini akan memiliki antarmuka yang modern, menarik, dan mudah digunakan.
+## Features
 
-## Desain dan Fitur
+*   **Email-based session:** Users start a session by entering their email address.
+*   **Camera access:** The application requests permission to access the user's camera.
+*   **Countdown timer:** A countdown timer is displayed before each photo is taken.
+*   **Automatic photo capture:** Photos are taken automatically at regular intervals.
+*   **Photo gallery:** Captured photos are displayed in a gallery.
+*   **Session timer:** A session timer limits the duration of the photo session.
 
-### Tampilan Awal:
-- **Input Email:** Sebuah field input untuk pengguna memasukkan alamat email.
-- **Tombol "Start":** Tombol untuk memulai sesi foto.
-- **Desain:**
-    - **Latar Belakang:** Latar belakang dengan tekstur dan gradient yang lembut.
-    - **Tipografi:** Penggunaan font yang modern dan mudah dibaca.
-    - **Warna:** Palet warna yang cerah dan energik.
-    - **Ikon:** Penggunaan ikon untuk memperjelas aksi.
+## Current Implementation
 
-### Sesi Foto:
-- **Akses Kamera:** Meminta izin pengguna untuk mengakses kamera.
-- **Hitung Mundur:** Hitung mundur 5 detik sebelum sesi foto dimulai.
-- **Tampilan Kamera:** Menampilkan feed dari kamera pengguna.
-- **Timer:** Timer 10 menit untuk sesi foto.
-- **Pengambilan Foto Otomatis:** Aplikasi akan mengambil foto secara otomatis setiap 10 detik.
-- **Galeri Mini:** Menampilkan thumbnail dari foto yang telah diambil secara real-time.
+### Frontend
 
-### Gaya dan Efek Visual:
-- **Efek "Glow":** Tombol dan elemen interaktif akan memiliki efek "glow" untuk membuatnya menonjol.
-- **Animasi:** Animasi halus untuk transisi antar state (misalnya, dari tampilan awal ke sesi foto).
-- **Shadow:** Penggunaan shadow untuk memberikan kedalaman pada elemen UI.
+*   **View:** The main view is `resources/views/photobooth.blade.php`.
+*   **Styling:** Tailwind CSS is used for styling.
+*   **JavaScript:** Vanilla JavaScript is used to handle the application's logic.
 
-## Rencana Implementasi
+### Backend
 
-1.  **Membuat Route:** Menambahkan route `/photobooth` di `routes/web.php`.
-2.  **Membuat Controller:** Membuat `PhotoBoothController` dengan metode `index`.
-3.  **Membuat View:** Membuat file `resources/views/photobooth.blade.php`.
-4.  **HTML & CSS:** Menulis struktur HTML dan styling untuk halaman photobooth. Menghapus tombol capture manual.
-5.  **JavaScript:**
-    - Mengimplementasikan validasi email.
-    - Mengakses kamera menggunakan `navigator.mediaDevices.getUserMedia`.
-    - Membuat fungsi untuk hitung mundur 5 detik.
-    - Membuat timer 10 menit.
-    - Mengimplementasikan pengambilan foto otomatis setiap 10 detik setelah sesi dimulai.
-    - Menghentikan pengambilan foto otomatis saat sesi berakhir.
+*   **Controller:** The `app/Http/Controllers/PhotoBoothController.php` handles the application's backend logic.
+*   **Routing:** The route for the photobooth is defined in `routes/web.php`.
+
+## Recent Changes
+
+*   **Camera detection and permission handling:** The application now checks if a camera is available and if the user has granted permission to use it. If not, an appropriate error message is displayed.
+
+## Future Enhancements
+
+*   **Image storage:** Captured photos will be saved to the server.
+*   **Email integration:** An email will be sent to the user with a link to their photo gallery.
+*   **Social media sharing:** Users will be able to share their photos on social media.
